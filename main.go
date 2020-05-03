@@ -71,6 +71,9 @@ func determinEncode(b *bufio.Reader) encoding.Encoding {
 	return e2
 }
 
+/**
+使用正则表达式，匹配所要抓取的内容
+*/
 func parseContent(content []byte) {
 	//<a href="/tag/小说" class="tag">小说</a>
 	compile := regexp.MustCompile(`<a href="([^"]+)" class="tag">([^"]+)</a>`)

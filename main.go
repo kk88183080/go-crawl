@@ -9,6 +9,7 @@ import (
 	"golang.org/x/text/transform"
 	"io/ioutil"
 	"net/http"
+	"regexp"
 )
 
 func main() {
@@ -53,6 +54,7 @@ func main() {
 	fmt.Printf("rs : %s", result)
 	fmt.Println()
 
+	parseContent(result)
 }
 
 /**
@@ -67,4 +69,15 @@ func determinEncode(b *bufio.Reader) encoding.Encoding {
 
 	e2, _, _ := charset.DetermineEncoding(rs, "")
 	return e2
+}
+
+func parseContent(content []byte) {
+	//<a href="/tag/小说" class="tag">小说</a>
+	compile := regexp.MustCompile(`<a href="([^"]+)" class="tag">([^"]+)</a>`)
+	submatch := compile.FindAllSubmatch(content, -1)
+	for _, m := range submatch {
+		fmt.Printf("m[0]:%s，m[1]:%s，m[2]:%s", m[0], m[1], m[2])
+		fmt.Println()
+	}
+
 }

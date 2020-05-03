@@ -3,6 +3,7 @@ package parse
 import (
 	"../engine"
 	"../model"
+	"fmt"
 	"regexp"
 	"strconv"
 )
@@ -83,24 +84,42 @@ var testStr = `<div id="info" class="">
       <span class="pl">ISBN:</span> 9787115488763<br>
 
 
-</div>`
+</div>
+
+<span class="pl">作者:</span>&nbsp;
+        <a href="https://book.douban.com/author/1039386/">
+                [哥伦比亚]
+            加西亚·马尔克斯</a>
+    <br>
+`
 
 var bookname_reg = regexp.MustCompile(`<h1>[\d\D]*?<span property="v:itemreviewed">([^<]+)</span>[\d\D]*?<div class="clear"></div>[\d\D]*?</h1>`)
 var author_reg = regexp.MustCompile(`<span class="pl"> 作者</span>:[\d\D]*?<a.*?>([^<]+)</a>`)
+var author_reg_blank = regexp.MustCompile(`<span class="pl">作者:</span>&nbsp;[\d\D]*?<a.*?>([^<]+)</a>`)
 var publicer_reg = regexp.MustCompile(`<span class="pl">出版社:</span> ([^<]+)<br/>`)
 var pages_reg = regexp.MustCompile(`<span class="pl">页数:</span> ([^<]+)<br/>`)
 var price_reg = regexp.MustCompile(`<span class="pl">定价:</span> ([^<]+)<br/>`)
 var score_reg = regexp.MustCompile(`<strong class="ll rating_num " property="v:average">([^<]+)</strong>`)
 var info_reg = regexp.MustCompile(`<div class="intro">[\d\D]*?<p>([^<]+)</p></div>`)
 
-func ParseDetailContent(content []byte) engine.ParseResult {
+func ParseDetailContent(content []byte, bookname string) engine.ParseResult {
 	//
-	//fmt.Printf("%s\n", content)
+	fmt.Printf("%s\n", content)
 
 	result := engine.ParseResult{}
 	bookdetai := model.Bookdetai{}
-	bookdetai.Bookname = parseDetailItemVal(bookname_reg, content)
+	if bookname == "" {
+		bookdetai.Bookname = parseDetailItemVal(bookname_reg, content)
+	} else {
+		// 从列表页面获取数据
+		bookdetai.Bookname = bookname
+	}
+
 	bookdetai.Author = parseDetailItemVal(author_reg, content)
+	if bookdetai.Author == "" {
+		bookdetai.Author = parseDetailItemVal(author_reg_blank, content)
+	}
+
 	bookdetai.Publicer = parseDetailItemVal(publicer_reg, content)
 	pages, _ := strconv.Atoi(parseDetailItemVal(pages_reg, content))
 	bookdetai.Pages = pages

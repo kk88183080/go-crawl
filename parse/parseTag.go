@@ -21,7 +21,7 @@ func ParseContent(content []byte) engine.ParseResult {
 		result.Items = append(result.Items, m[2])
 		result.Requests = append(result.Requests, engine.Request{
 			Url:       "https://book.douban.com/" + string(m[1]),
-			ParseFunc: engine.NilParse,
+			ParseFunc: Parsebook,
 		})
 	}
 

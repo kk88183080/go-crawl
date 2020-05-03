@@ -7,7 +7,7 @@ import (
 
 func main() {
 
-	// 爬取ta列表
+	// 爬取tag列表
 	//engine.Run(engine.Request{
 	//	Url:       "https://book.douban.com/",
 	//	ParseFunc: parse.ParseContent,
@@ -20,8 +20,16 @@ func main() {
 	//})
 
 	// 爬取book详情页面
+	//engine.Run(engine.Request{
+	//	Url:       "https://book.douban.com/subject/30293801/",
+	//	ParseFunc: parse.ParseDetailContent,
+	//})
+	//
+	// 爬取book详情页面
 	engine.Run(engine.Request{
-		Url:       "https://book.douban.com/subject/30293801/",
-		ParseFunc: parse.ParseDetailContent,
+		Url: "https://book.douban.com/subject/6082808/",
+		ParseFunc: func(bytes []byte) engine.ParseResult {
+			return parse.ParseDetailContent(bytes, "百年孤独")
+		},
 	})
 }

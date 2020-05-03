@@ -14,9 +14,12 @@ func Parsebook(content []byte) engine.ParseResult {
 
 	result := engine.ParseResult{}
 	for _, e := range submatch {
+		bookename := string(e[2])
 		result.Requests = append(result.Requests, engine.Request{
-			Url:       string(e[1]),
-			ParseFunc: engine.NilParse,
+			Url: string(e[1]),
+			ParseFunc: func(content []byte) engine.ParseResult {
+				return ParseDetailContent(content, bookename)
+			},
 		})
 
 		result.Items = append(result.Items, string(e[2]))

@@ -5,7 +5,7 @@ package engine
 
 type ParseResult struct {
 	Requests []Request
-	Items    []interface{}
+	Items    []interface{} // 可以存放任何对象
 }
 
 type Request struct {

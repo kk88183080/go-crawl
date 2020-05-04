@@ -10,9 +10,9 @@ import (
 */
 type Scheduler interface {
 	Submit(Request)
-	ConfigWorkChan(chan Request)
 	Run()
 	WorkReady(chan Request)
+	WorkChan() chan Request
 }
 
 /**
@@ -30,7 +30,7 @@ func (engine *ConcurrentEngine) Run(seed ...Request) {
 	engine.Scheduler.Run()
 
 	for i := 0; i < engine.Work; i++ {
-		CreateWork(out, engine.Scheduler)
+		CreateWork(engine.Scheduler.WorkChan(), out, engine.Scheduler)
 	}
 
 	for _, r := range seed {
@@ -46,9 +46,7 @@ func (engine *ConcurrentEngine) Run(seed ...Request) {
 	}
 }
 
-func CreateWork(out chan ParseResult, s Scheduler) {
-	in := make(chan Request)
-
+func CreateWork(in chan Request, out chan ParseResult, s Scheduler) {
 	go func() {
 		for {
 			s.WorkReady(in)

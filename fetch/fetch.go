@@ -23,8 +23,6 @@ func Fetch(url string) ([]byte, error) {
 	client := &http.Client{}
 
 	request, e := http.NewRequest(http.MethodGet, url, nil)
-	//request, e := http.NewRequest(http.MethodGet, "http://www.chinanews.com/", nil)
-	//request, e := http.NewRequest(http.MethodGet, "http://www.baidu.com/", nil)
 
 	if e != nil {
 		panic(e)
@@ -51,18 +49,7 @@ func Fetch(url string) ([]byte, error) {
 
 	reader := transform.NewReader(bodyReader, encode.NewDecoder())
 
-	//io.Copy(os.Stdout, resp.Body)
-
 	return ioutil.ReadAll(reader)
-	//result, err := ioutil.ReadAll(reader)
-	//if err != nil {
-	//	panic(err)
-	//}
-	//
-	//fmt.Printf("rs : %s", result)
-	//fmt.Println()
-	//
-	//ParseContent(result)
 }
 
 /**
@@ -71,7 +58,7 @@ func Fetch(url string) ([]byte, error) {
 func DeterminEncode(b *bufio.Reader) encoding.Encoding {
 	rs, e := b.Peek(1024)
 	if e != nil {
-		panic(e)
+		//panic(e)
 		return unicode.UTF8
 	}
 

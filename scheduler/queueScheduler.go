@@ -13,12 +13,12 @@ func (s *QueueScheduler) Submit(r engine.Request) {
 	s.requestChan <- r
 }
 
-func (s *QueueScheduler) ConfigWorkChan(chan engine.Request) {
-
-}
-
 func (s *QueueScheduler) WorkReady(w chan engine.Request) {
 	s.workChan <- w
+}
+
+func (s *QueueScheduler) WorkChan() chan engine.Request {
+	return make(chan engine.Request)
 }
 
 func (s *QueueScheduler) Run() {

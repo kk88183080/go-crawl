@@ -47,7 +47,7 @@ func main() {
 
 	// 并发版的
 	e := engine.ConcurrentEngine{
-		Scheduler: &scheduler.QueueScheduler{},
+		Scheduler: &scheduler.SimpleScheduler{},
 		Work:      100,
 	}
 

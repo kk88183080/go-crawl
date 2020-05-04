@@ -3,6 +3,7 @@ package main
 import (
 	"./engine"
 	"./parse"
+	"./persist"
 	"./scheduler"
 )
 
@@ -49,6 +50,7 @@ func main() {
 	e := engine.ConcurrentEngine{
 		Scheduler: &scheduler.SimpleScheduler{},
 		Work:      100,
+		ItemChan:  persist.SaveItem(),
 	}
 
 	e.Run(engine.Request{

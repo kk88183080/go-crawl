@@ -2,6 +2,7 @@ package engine
 
 import (
 	"../fetch"
+	"../persist"
 	"github.com/go-acme/lego/log"
 )
 
@@ -21,6 +22,7 @@ type Scheduler interface {
 type ConcurrentEngine struct {
 	Scheduler Scheduler
 	Work      int
+	ItemChan  chan interface{} // 保存数据的通道
 }
 
 func (engine *ConcurrentEngine) Run(seed ...Request) {
@@ -40,6 +42,12 @@ func (engine *ConcurrentEngine) Run(seed ...Request) {
 	for {
 		parseResult := <-out
 
+		// 把结果数据打入保存数据的通道
+		for _, item := range parseResult.Items {
+			go func() {
+				engine.ItemChan <- item // 本行代码是阻塞的，所以要加协程
+			}()
+		}
 		for _, r := range parseResult.Requests {
 			engine.Scheduler.Submit(r)
 		}
@@ -63,7 +71,7 @@ func CreateWork(in chan Request, out chan ParseResult, s Scheduler) {
 }
 
 func work(request Request) (ParseResult, error) {
-	log.Println("fetch url:%s", request.Url)
+	//log.Println("fetch url:%s", request.Url)
 
 	bodyResult, e := fetch.Fetch(request.Url)
 

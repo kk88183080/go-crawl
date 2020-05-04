@@ -3,7 +3,7 @@ package parse
 import (
 	"../engine"
 	"../model"
-	"fmt"
+	"github.com/go-acme/lego/log"
 	"regexp"
 	"strconv"
 )
@@ -104,7 +104,7 @@ var info_reg = regexp.MustCompile(`<div class="intro">[\d\D]*?<p>([^<]+)</p></di
 
 func ParseDetailContent(content []byte, bookname string) engine.ParseResult {
 	//
-	fmt.Printf("%s\n", content)
+	//fmt.Printf("%s\n", content)
 
 	result := engine.ParseResult{}
 	bookdetai := model.Bookdetai{}
@@ -127,7 +127,7 @@ func ParseDetailContent(content []byte, bookname string) engine.ParseResult {
 	bookdetai.Score = parseDetailItemVal(score_reg, content)
 	bookdetai.Info = parseDetailItemVal(info_reg, content)
 
-	//log.Println(bookdetai)
+	log.Println(bookdetai)
 	result.Items = []interface{}{bookdetai}
 
 	return result

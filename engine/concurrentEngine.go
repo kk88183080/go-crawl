@@ -18,7 +18,9 @@ type SimpleScheduler struct {
 }
 
 func (s *SimpleScheduler) submit(request Request) {
-	s.WorkChan <- request
+	go func() {
+		s.WorkChan <- request
+	}()
 }
 
 func (s *SimpleScheduler) configWorkChan(r chan Request) {
@@ -38,6 +40,8 @@ func (engine *ConcurrentEngine) Run(seed ...Request) {
 	in := make(chan Request)
 	out := make(chan ParseResult)
 
+	engine.Scheduler.configWorkChan(in)
+
 	for i := 0; i < engine.Work; i++ {
 		CreateWork(in, out)
 	}
@@ -45,6 +49,14 @@ func (engine *ConcurrentEngine) Run(seed ...Request) {
 	for _, r := range seed {
 		//work(r)
 		engine.Scheduler.submit(r)
+	}
+
+	for {
+		parseResult := <-out
+
+		for _, r := range parseResult.Requests {
+			engine.Scheduler.submit(r)
+		}
 	}
 }
 

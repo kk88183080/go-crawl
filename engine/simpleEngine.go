@@ -6,7 +6,13 @@ import (
 	"github.com/go-acme/lego/log"
 )
 
-func Run(seed ...Request) {
+/**
+单机版
+*/
+type simpleEngine struct {
+}
+
+func (engine *simpleEngine) Run(seed ...Request) {
 
 	var request []Request
 

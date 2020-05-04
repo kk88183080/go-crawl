@@ -9,22 +9,8 @@ import (
 调度器
 */
 type Scheduler interface {
-	submit(Request)
-	configWorkChan(chan Request)
-}
-
-type SimpleScheduler struct {
-	WorkChan chan Request
-}
-
-func (s *SimpleScheduler) submit(request Request) {
-	go func() {
-		s.WorkChan <- request
-	}()
-}
-
-func (s *SimpleScheduler) configWorkChan(r chan Request) {
-	s.WorkChan = r
+	Submit(Request)
+	ConfigWorkChan(chan Request)
 }
 
 /**
@@ -40,22 +26,21 @@ func (engine *ConcurrentEngine) Run(seed ...Request) {
 	in := make(chan Request)
 	out := make(chan ParseResult)
 
-	engine.Scheduler.configWorkChan(in)
+	engine.Scheduler.ConfigWorkChan(in)
 
 	for i := 0; i < engine.Work; i++ {
 		CreateWork(in, out)
 	}
 
 	for _, r := range seed {
-		//work(r)
-		engine.Scheduler.submit(r)
+		engine.Scheduler.Submit(r)
 	}
 
 	for {
 		parseResult := <-out
 
 		for _, r := range parseResult.Requests {
-			engine.Scheduler.submit(r)
+			engine.Scheduler.Submit(r)
 		}
 	}
 }

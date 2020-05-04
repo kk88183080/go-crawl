@@ -3,6 +3,7 @@ package main
 import (
 	"./engine"
 	"./parse"
+	"./scheduler"
 )
 
 func main() {
@@ -35,7 +36,7 @@ func main() {
 
 	// 并发版的
 	e := engine.ConcurrentEngine{
-		Scheduler: &engine.SimpleScheduler{},
+		Scheduler: &scheduler.SimpleScheduler{},
 		Work:      100,
 	}
 

@@ -22,10 +22,11 @@ func (s *QueueScheduler) WorkReady(w chan engine.Request) {
 }
 
 func (s *QueueScheduler) Run() {
-	var requestQ []engine.Request
-	var workQ []chan engine.Request
-
+	s.requestChan = make(chan engine.Request)
+	s.workChan = make(chan chan engine.Request)
 	go func() {
+		var requestQ []engine.Request
+		var workQ []chan engine.Request
 		for {
 
 			var activeRequest engine.Request

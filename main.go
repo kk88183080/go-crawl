@@ -35,8 +35,19 @@ func main() {
 	//})
 
 	// 并发版的
+	//e := engine.ConcurrentEngine{
+	//	Scheduler: &scheduler.SimpleScheduler{},
+	//	Work:      100,
+	//}
+	//
+	//e.Run(engine.Request{
+	//	Url:       "https://book.douban.com/",
+	//	ParseFunc: parse.ParseContent,
+	//})
+
+	// 并发版的
 	e := engine.ConcurrentEngine{
-		Scheduler: &scheduler.SimpleScheduler{},
+		Scheduler: &scheduler.QueueScheduler{},
 		Work:      100,
 	}
 

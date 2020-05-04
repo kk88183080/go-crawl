@@ -11,6 +11,8 @@ import (
 type Scheduler interface {
 	Submit(Request)
 	ConfigWorkChan(chan Request)
+	Run()
+	WorkReady(chan Request)
 }
 
 /**
@@ -23,13 +25,12 @@ type ConcurrentEngine struct {
 
 func (engine *ConcurrentEngine) Run(seed ...Request) {
 
-	in := make(chan Request)
 	out := make(chan ParseResult)
 
-	engine.Scheduler.ConfigWorkChan(in)
+	engine.Scheduler.Run()
 
 	for i := 0; i < engine.Work; i++ {
-		CreateWork(in, out)
+		CreateWork(out, engine.Scheduler)
 	}
 
 	for _, r := range seed {
@@ -45,9 +46,12 @@ func (engine *ConcurrentEngine) Run(seed ...Request) {
 	}
 }
 
-func CreateWork(in chan Request, out chan ParseResult) {
+func CreateWork(out chan ParseResult, s Scheduler) {
+	in := make(chan Request)
+
 	go func() {
 		for {
+			s.WorkReady(in)
 			request := <-in
 
 			parseResult, error := work(request)

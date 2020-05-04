@@ -9,9 +9,16 @@ import (
 	"golang.org/x/text/transform"
 	"io/ioutil"
 	"net/http"
+	"time"
 )
 
+// 10微秒请求一次
+var ratelimit = time.Tick(10 * time.Millisecond)
+
 func Fetch(url string) ([]byte, error) {
+	// 延时请求
+	<-ratelimit
+
 	//生成client 参数为默认
 	client := &http.Client{}
 

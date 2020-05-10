@@ -9,6 +9,7 @@ import (
 	"golang.org/x/text/transform"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -17,30 +18,39 @@ var ratelimit = time.Tick(10 * time.Millisecond)
 
 func Fetch(url string) ([]byte, error) {
 	// 延时请求
-	<-ratelimit
+	//<-ratelimit
 
 	//生成client 参数为默认
 	client := &http.Client{}
-
+	//log.Println("fetch请求地址", url)
 	request, e := http.NewRequest(http.MethodGet, url, nil)
 
 	if e != nil {
 		panic(e)
 	}
 
+	// 设置cookies
+	timestap := time.Now().Unix()
+	cookie1 := &http.Cookie{Name: "Hm_lpvt_2c8ad67df9e787ad29dbd54ee608f5d2", Value: strconv.FormatInt(timestap, 10), HttpOnly: false}
+	request.AddCookie(cookie1)
+
+	cookie2 := &http.Cookie{Name: "FSSBBIl1UgzbN7NO", Value: "5o33UhOmILHRozGj9p.Ka1PmstJbJZkNpZupmw4BzIhAxsesFCK5nN6Cu7EF.6DbPqZSO1OQN7scchQuYI190Ea", HttpOnly: false}
+	request.AddCookie(cookie2)
+
 	// 设置头信息解决返回418的问题
-	request.Header.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36")
+	request.Header.Add("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:75.0) Gecko/20100101 Firefox/75.0")
+	request.Header.Add("Referer", "https://album.zhenai.com/u/1045778053")
 
 	resp, err := client.Do(request)
 	if err != nil {
 		fmt.Println(err)
-		panic(err)
+		//panic(err)
 	}
 	// 延时关闭
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		fmt.Printf("Error status code:%d ", resp.StatusCode)
+		fmt.Printf("fetch Error status code:%d, %s ", resp.StatusCode, request.URL)
 		fmt.Println()
 	}
 

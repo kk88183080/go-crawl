@@ -2,7 +2,6 @@ package persist
 
 import (
 	"context"
-	"github.com/go-acme/lego/log"
 	"gopkg.in/olivere/elastic.v5"
 )
 
@@ -13,15 +12,19 @@ func SaveItem() chan interface{} {
 		itemCount := 0
 		for {
 			item := <-out
-			log.Printf("save item $%d, %v", itemCount, item)
+			//log.Printf("save item $%d, %v", itemCount, item)
 			itemCount++
 			// 保存数据到数据库
-			saveEs(item)
+			//saveEs(item)
+			saveMysql(item)
 		}
-
 	}()
 
 	return out
+}
+
+func saveMysql(item interface{}) {
+
 }
 
 func saveEs(item interface{}) {
@@ -31,7 +34,7 @@ func saveEs(item interface{}) {
 		panic(e)
 	}
 
-	_, err := client.Index().Index("db_name_1").Type("table_name_1").BodyJson(item).Do(context.Background())
+	_, err := client.Index().Index("db_name_1").Type("table_name").BodyJson(item).Do(context.Background())
 
 	if err != nil {
 		panic(err)

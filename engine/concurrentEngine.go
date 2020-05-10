@@ -2,7 +2,6 @@ package engine
 
 import (
 	"../fetch"
-	"../persist"
 	"github.com/go-acme/lego/log"
 )
 
@@ -71,7 +70,7 @@ func CreateWork(in chan Request, out chan ParseResult, s Scheduler) {
 }
 
 func work(request Request) (ParseResult, error) {
-	//log.Println("fetch url:%s", request.Url)
+	//log.Println("engine work url:%s", request.Url)
 
 	bodyResult, e := fetch.Fetch(request.Url)
 
@@ -79,6 +78,12 @@ func work(request Request) (ParseResult, error) {
 		log.Println("fetch error:%s", request.Url)
 		return ParseResult{}, e
 	}
+
+	if request.ParseFunc == nil {
+		return ParseResult{}, nil
+	}
+
+	log.Println(string(bodyResult))
 
 	return request.ParseFunc(bodyResult), nil
 }

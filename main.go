@@ -2,7 +2,7 @@ package main
 
 import (
 	"./engine"
-	"./parse"
+	"./parse/zhenai"
 	"./persist"
 	"./scheduler"
 )
@@ -47,6 +47,29 @@ func main() {
 	//})
 
 	// 并发版的
+	//e := engine.ConcurrentEngine{
+	//	Scheduler: &scheduler.SimpleScheduler{},
+	//	Work:      100,
+	//	ItemChan:  persist.SaveItem(),
+	//}
+	//
+	//e.Run(engine.Request{
+	//	Url:       "https://book.douban.com/",
+	//	ParseFunc: parse.ParseContent,
+	//})
+
+	// 并发版的
+	//e := engine.ConcurrentEngine{
+	//	Scheduler: &scheduler.SimpleScheduler{},
+	//	Work:      100,
+	//	ItemChan: persist.SaveItem(),
+	//}
+	//
+	//e.Run(engine.Request{
+	//	Url:       "http://www.zhenai.com/zhenghun",
+	//	ParseFunc: zhenai.ParseCity,
+	//})
+
 	e := engine.ConcurrentEngine{
 		Scheduler: &scheduler.SimpleScheduler{},
 		Work:      100,
@@ -54,7 +77,15 @@ func main() {
 	}
 
 	e.Run(engine.Request{
-		Url:       "https://book.douban.com/",
-		ParseFunc: parse.ParseContent,
+		Url: "https://album.zhenai.com/u/1045778053",
+		ParseFunc: func(bytes []byte) engine.ParseResult {
+			return zhenai.ParsePersonDetail(bytes, "阿里征婚", "女")
+		},
 	})
+	/*e.Run(engine.Request{
+		Url:       "http://www.zhenai.com/zhenghun/ali",
+		ParseFunc: func(bytes []byte) engine.ParseResult {
+			return zhenai.ParsePersonList(bytes, "阿里征婚")
+		},
+	})*/
 }

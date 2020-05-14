@@ -77,15 +77,9 @@ func main() {
 	}
 
 	e.Run(engine.Request{
-		Url: "https://album.zhenai.com/u/1045778053",
+		Url: "http://www.zhenai.com/zhenghun",
 		ParseFunc: func(bytes []byte) engine.ParseResult {
-			return zhenai.ParsePersonDetail(bytes, "阿里征婚", "女")
+			return zhenai.ParseCity(bytes)
 		},
 	})
-	/*e.Run(engine.Request{
-		Url:       "http://www.zhenai.com/zhenghun/ali",
-		ParseFunc: func(bytes []byte) engine.ParseResult {
-			return zhenai.ParsePersonList(bytes, "阿里征婚")
-		},
-	})*/
 }

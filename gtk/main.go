@@ -16,6 +16,8 @@ func main() {
 	window.SetVisible(false)
 	window.Show() //显示窗口
 	//window.Fullscreen()
+	window.ActivateFocus()
+	//window.SetActive(true)
 
 	//window.SetAutoStartupNotification(true)
 	gtk.Main() //主事件循环，等待用户操作

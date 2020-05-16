@@ -70,10 +70,17 @@ func main() {
 	//	ParseFunc: zhenai.ParseCity,
 	//})
 
+	// 如果保存函数没有创建成功，直接退出
+	items, err := persist.SaveItem()
+
+	if err != nil {
+		panic(err)
+	}
+
 	e := engine.ConcurrentEngine{
 		Scheduler: &scheduler.SimpleScheduler{},
 		Work:      100,
-		ItemChan:  persist.SaveItem(),
+		ItemChan:  items,
 	}
 
 	e.Run(engine.Request{

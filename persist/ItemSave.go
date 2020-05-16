@@ -7,7 +7,13 @@ import (
 	"gopkg.in/olivere/elastic.v5"
 )
 
-func SaveItem() chan engine.Item {
+func SaveItem() (chan engine.Item, error) {
+
+	client, e := elastic.NewClient(elastic.SetSniff(false))
+	if e != nil {
+		return nil, e
+	}
+
 	out := make(chan engine.Item)
 
 	go func() {
@@ -17,24 +23,19 @@ func SaveItem() chan engine.Item {
 			//log.Printf("save item $%d, %v", itemCount, item)
 			itemCount++
 			// 保存数据到数据库
-			//saveEs(item)
-			saveMysql(item)
+			saveEs(client, item)
+			//saveMysql(item)
 		}
 	}()
 
-	return out
+	return out, nil
 }
 
 func saveMysql(item engine.Item) {
 
 }
 
-func saveEs(item engine.Item) error {
-	client, e := elastic.NewClient(
-		elastic.SetSniff(false))
-	if e != nil {
-		panic(e)
-	}
+func saveEs(client *elastic.Client, item engine.Item) error {
 
 	if item.Type == "" {
 		return errors.New("type is not null or empty")

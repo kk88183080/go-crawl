@@ -128,7 +128,15 @@ func ParseDetailContent(content []byte, bookname string) engine.ParseResult {
 	bookdetai.Info = parseDetailItemVal(info_reg, content)
 
 	log.Println(bookdetai)
-	result.Items = []interface{}{bookdetai}
+	//result.Items = []interface{}{bookdetai}
+	result.Items = []engine.Item{
+		{
+			Url:     "",
+			Type:    "book",
+			Id:      "",
+			Payload: bookdetai,
+		},
+	}
 
 	return result
 }

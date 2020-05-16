@@ -21,7 +21,7 @@ type Scheduler interface {
 type ConcurrentEngine struct {
 	Scheduler Scheduler
 	Work      int
-	ItemChan  chan interface{} // 保存数据的通道
+	ItemChan  chan Item // 保存数据的通道
 }
 
 func (engine *ConcurrentEngine) Run(seed ...Request) {

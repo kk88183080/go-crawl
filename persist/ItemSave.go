@@ -1,12 +1,14 @@
 package persist
 
 import (
+	"../engine"
 	"context"
+	"errors"
 	"gopkg.in/olivere/elastic.v5"
 )
 
-func SaveItem() chan interface{} {
-	out := make(chan interface{})
+func SaveItem() chan engine.Item {
+	out := make(chan engine.Item)
 
 	go func() {
 		itemCount := 0
@@ -23,20 +25,32 @@ func SaveItem() chan interface{} {
 	return out
 }
 
-func saveMysql(item interface{}) {
+func saveMysql(item engine.Item) {
 
 }
 
-func saveEs(item interface{}) {
+func saveEs(item engine.Item) error {
 	client, e := elastic.NewClient(
 		elastic.SetSniff(false))
 	if e != nil {
 		panic(e)
 	}
 
-	_, err := client.Index().Index("db_name_1").Type("table_name").BodyJson(item).Do(context.Background())
+	if item.Type == "" {
+		return errors.New("type is not null or empty")
+	}
+
+	indexService := client.Index().Index("db_name_1").Type(item.Type).BodyJson(item)
+
+	if item.Id != "" {
+		indexService.Id(item.Id)
+	}
+
+	_, err := indexService.Do(context.Background())
 
 	if err != nil {
 		panic(err)
 	}
+
+	return nil
 }

@@ -35,7 +35,13 @@ func ParsePersonList(content []byte, city string) engine.ParseResult {
 	}
 	for _, rs := range submatch {
 		log.Println("person list name:%s, url:%s", string(rs[1]), string(rs[2]), string(rs[3]), string(rs[4]), string(rs[5]))
-		result.Items = append(result.Items, rs[2])
+		result.Items = append(result.Items, engine.Item{
+			Url:     "",
+			Id:      "x",
+			Type:    "list",
+			Payload: string(rs[2]),
+		})
+
 		result.Requests = append(result.Requests, engine.Request{
 			Url:       string(rs[3]),
 			ParseFunc: nil,

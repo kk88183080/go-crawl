@@ -18,7 +18,7 @@ func ParseContent(content []byte) engine.ParseResult {
 
 	result := engine.ParseResult{}
 	for _, m := range submatch {
-		result.Items = append(result.Items, m[2])
+		//result.Items = append(result.Items, m[2])
 		result.Requests = append(result.Requests, engine.Request{
 			Url:       "https://book.douban.com/" + string(m[1]),
 			ParseFunc: Parsebook,

@@ -26,9 +26,16 @@ func ParsePersonDetail(content []byte, img string, sex string) engine.ParseResul
 	person.Sex = sex
 	detailItemMoreFind(reg_more_item, content, &person)
 
-	result := engine.ParseResult{}
-	result.Requests = nil
-	result.Items = []interface{}{person}
+	result := engine.ParseResult{
+		Items: []engine.Item{
+			{
+				Url:     "",
+				Type:    "zhenai",
+				Id:      "1",
+				Payload: person,
+			},
+		},
+	}
 
 	return result
 }

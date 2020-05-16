@@ -34,7 +34,7 @@ func (engine *simpleEngine) Run(seed ...Request) {
 			panic(e)
 		}
 
-		parseResult := r.ParseFunc(bodyResult)
+		parseResult := r.ParseFunc.Parse(bodyResult, r.Url)
 		request = append(request, parseResult.Requests...)
 
 		for _, item := range parseResult.Items {

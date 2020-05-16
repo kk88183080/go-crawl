@@ -15,11 +15,45 @@ type Item struct {
 	Payload interface{}
 }
 
-type Request struct {
-	Url       string
-	ParseFunc func([]byte) ParseResult
+type Parser interface {
+	Parse(content []byte, url string) ParseResult // 解析方法
+	Serialize() (name string, args interface{})   // 序列化方法
 }
 
-func NilParse([]byte) ParseResult {
+type Request struct {
+	Url       string
+	ParseFunc Parser
+}
+
+type NilParse struct {
+}
+
+func (f NilParse) Parse(content []byte, url string) ParseResult {
 	return ParseResult{}
+}
+
+func (f NilParse) Serialize() (name string, args interface{}) {
+	return "NilParse", nil
+}
+
+type ParseFunc func(content []byte, url string) ParseResult
+
+type FuncParse struct {
+	Parser ParseFunc
+	Name   string
+}
+
+func (f FuncParse) Parse(content []byte, url string) ParseResult {
+	return f.Parser(content, url)
+}
+
+func (f FuncParse) Serialize() (name string, args interface{}) {
+	return f.Name, nil
+}
+
+func NewFuncParse(p ParseFunc, name string) *FuncParse {
+	return &FuncParse{
+		Parser: p,
+		Name:   name,
+	}
 }

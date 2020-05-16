@@ -22,9 +22,7 @@ func main() {
 	}
 
 	e.Run(engine.Request{
-		Url: "http://www.zhenai.com/zhenghun",
-		ParseFunc: func(bytes []byte) engine.ParseResult {
-			return zhenai.ParseCity(bytes)
-		},
+		Url:       "http://www.zhenai.com/zhenghun",
+		ParseFunc: engine.NewFuncParse(zhenai.ParseCity, "ParseCity"),
 	})
 }

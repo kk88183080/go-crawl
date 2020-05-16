@@ -26,7 +26,7 @@ td width="180"><span class="grayL">性别：</span>男士</td>
 
 var reg = regexp.MustCompile(`<img src="([^"]+)" alt="([^"]+)"></a></div> <div class="content"><table><tbody><tr><th><a href="([^"]+)" target="_blank">([^<]+)</a></th></tr> <tr><td width="180"><span class="grayL">性别：</span>([^<]+)</td>`)
 
-func ParsePersonList(content []byte, city string) engine.ParseResult {
+func ParsePersonList(content []byte, _ string, city string) engine.ParseResult {
 	result := engine.ParseResult{}
 	log.Println(string(content))
 	submatch := reg.FindAllSubmatch(content, -1)
@@ -54,4 +54,20 @@ func ParsePersonList(content []byte, city string) engine.ParseResult {
 	}
 
 	return result
+}
+
+type CityListParse struct {
+	CityName string
+}
+
+func (f *CityListParse) Parse(content []byte, url string) engine.ParseResult {
+	return ParsePersonList(content, url, f.CityName)
+}
+
+func (f *CityListParse) Serialize() (name string, args interface{}) {
+	return "CityListParse", f.CityName
+}
+
+func NewCityListParse(cityName string) *CityListParse {
+	return &CityListParse{CityName: cityName}
 }

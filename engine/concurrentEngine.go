@@ -85,5 +85,5 @@ func work(request Request) (ParseResult, error) {
 
 	log.Println(string(bodyResult))
 
-	return request.ParseFunc(bodyResult), nil
+	return request.ParseFunc.Parse(bodyResult, request.Url), nil
 }

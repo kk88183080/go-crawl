@@ -1,4 +1,4 @@
-package rpcsupport
+package rpcSupport
 
 import (
 	"log"
@@ -7,12 +7,13 @@ import (
 	"net/rpc/jsonrpc"
 )
 
-func ServerRpc(host string, service interface{}) error {
-	rpc.Register(service)
+func ServerRpc(host string, servie interface{}) error {
+	rpc.Register(servie)
 
 	listener, e := net.Listen("tcp", host)
 
 	if e != nil {
+		log.Println("rpc server start error !")
 		return e
 	}
 
@@ -28,25 +29,18 @@ func ServerRpc(host string, service interface{}) error {
 
 		go jsonrpc.ServeConn(conn)
 	}
+
+	return nil
 }
 
 func NewClient(host string) (*rpc.Client, error) {
-	conn, e := net.Dial("tcp", ":1234")
+	conn, e := net.Dial("tcp", host)
 
 	if e != nil {
-		return e, nil
+		return nil, e
 	}
 
 	client := jsonrpc.NewClient(conn)
 
-	var result float64
-
-	e = client.Call("DemoService.Div", api.Args{A: 10, B: 0}, &result)
-
-	if e != nil {
-		log.Println(e)
-	} else {
-		log.Println("result:%v", result)
-
-	}
+	return client, nil
 }

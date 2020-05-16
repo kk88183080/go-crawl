@@ -23,7 +23,7 @@ func SaveItem() (chan engine.Item, error) {
 			//log.Printf("save item $%d, %v", itemCount, item)
 			itemCount++
 			// 保存数据到数据库
-			saveEs(client, item)
+			SaveEs(client, item)
 			//saveMysql(item)
 		}
 	}()
@@ -35,7 +35,7 @@ func saveMysql(item engine.Item) {
 
 }
 
-func saveEs(client *elastic.Client, item engine.Item) error {
+func SaveEs(client *elastic.Client, item engine.Item) error {
 
 	if item.Type == "" {
 		return errors.New("type is not null or empty")
